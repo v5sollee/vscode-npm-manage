@@ -1,27 +1,37 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { getWebViewContent } from './utils/index';
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+/**
+ * 插件触发时执行
+ */
 export function activate(context: vscode.ExtensionContext) {
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
+	// 插件启动时只会执行一次
 	console.log('Congratulations, your extension "vscode-npm-manage" is now active!');
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('vscode-npm-manage.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
+	// 将函数绑定到命令ID openNpmManageView上
+	const disposable = vscode.commands.registerCommand('vscode-npm-manage.openNpmManageView', (url) => {
+		console.log('当前文件地址:', url.path);
+		const html = getWebViewContent(context, 'src/view/webView.html');
+		const panel = vscode.window.createWebviewPanel('testWebView', '演示', vscode.ViewColumn.One, {
+			enableScripts: true, // 启用JS
+			retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+		});
+		panel.webview.html = html;
+		vscode.window.showErrorMessage('这是错误信息');
+	});
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from VScode Npm Manage!');
+	const updateLatest = vscode.commands.registerCommand('vscode-npm-manage.npmUpdateLatest', () => {
+		vscode.window.showInformationMessage('更新最新的npm');
 	});
 
 	context.subscriptions.push(disposable);
+	context.subscriptions.push(updateLatest);
 }
 
-// this method is called when your extension is deactivated
+/**
+ * 插件关闭时执行
+ */
 export function deactivate() {}

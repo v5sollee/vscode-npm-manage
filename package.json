@@ -1,23 +1,64 @@
 {
 	"name": "vscode-npm-manage",
-	"displayName": "VScode Npm Manage",
+	"displayName": "Npm Manage",
 	"description": "VSCode Npm管理插件",
+	"keywords": ["npm", "npm manage", "manage"],
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.46.0"
 	},
 	"categories": [
-		"Other"
+		"Other",
+		"Extension Packs"
 	],
 	"activationEvents": [
-        "onCommand:vscode-npm-manage.helloWorld"
+		"onCommand:vscode-npm-manage.npmUpdateLatest",
+		"onCommand:vscode-npm-manage.openNpmManageView"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "vscode-npm-manage",
+			"properties": {
+				"vscodeNpmManage.yourName": {
+					"type": "string",
+					"default": "guest",
+					"description": "你的名字"
+				},
+				"vscodeNpmManage.showTip": {
+					"type": "boolean",
+					"default": true,
+					"description": "是否在每次启动时显示欢迎提示！"
+				}
+			}
+		},
+		"menus": {
+			"editor/title": [{
+				"when": "resourceFilename == package.json",
+				"command": "vscode-npm-manage.openNpmManageView",
+				"group": "navigation"
+			}],
+			"editor/context": [{
+				"when": "resourceFilename == package.json",
+				"command": "vscode-npm-manage.openNpmManageView",
+				"group": "navigation"
+			}]
+    },
 		"commands": [
 			{
-				"command": "vscode-npm-manage.helloWorld",
-                "title": "Hello World"
+				"command": "vscode-npm-manage.openNpmManageView",
+				"title": "Open Npm Manage View",
+				"category": "Npm Manage",
+				"icon": {
+					"light": "/src/images/check-light.svg",
+					"dark": "/src/images/check-dark.svg"
+        }
+			},
+			{
+				"command": "vscode-npm-manage.npmUpdateLatest",
+				"title": "npm update latest",
+				"category": "Npm Manage"
 			}
 		]
 	},
