@@ -6,7 +6,7 @@ This is the README for your extension "vscode-npm-manage". After writing up a br
 
 Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
 
-For example if there is an image subfolder under your extension project workspace:
+For example if there is an image subfolder under your extension project workspace:2
 
 \!\[feature X\]\(images/feature-x.png\)
 
