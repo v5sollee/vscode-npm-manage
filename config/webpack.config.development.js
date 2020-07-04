@@ -1,6 +1,10 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+const createStyleLoaders = require('./webpack.less');
+
+const styleLoaders = createStyleLoaders({ isDev: true });
+// TODO 正式环境使用 MiniCssExtractPlugin
 
 const developmentBaseConfig = {
   mode: 'development',
@@ -24,7 +28,6 @@ const extensionConfig = {
     filename: '[name].js',
     libraryTarget: 'commonjs2', // 设置打包内容已module.exports方式导出
   },
-  exclude: [/node_modules/],
   plugins: [new FriendlyErrorsPlugin()],
   module: {
     rules: [
@@ -99,6 +102,7 @@ const webViewConfig = {
           },
         ],
       },
+      ...styleLoaders,
     ],
   },
   optimization: {
