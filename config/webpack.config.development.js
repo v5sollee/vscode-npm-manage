@@ -2,18 +2,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
-module.exports = {
+const developmentBaseConfig = {
   mode: 'development',
-  devtool: 'source-map', // inline-source-map
-  entry: {
-    // webview: path.resolve('src', 'webView.tsx'),
-    extension: path.resolve('src', 'extension.ts'),
-  },
-  output: {
-    path: path.resolve('dist'),
-    filename: '[name].js',
-    chunkFilename: '[name].chunk.js',
-  },
   resolve: {
     symlinks: false,
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
@@ -21,8 +11,55 @@ module.exports = {
   externals: {
     vscode: 'commonjs vscode', // vscode-module是热更新的临时目录，所以要排除掉。 在这里添加其他不应该被webpack打包的文件, 📖 -> https://webpack.js.org/configuration/externals/
   },
-  node: {
-    fs: 'empty',
+};
+
+const extensionConfig = {
+  target: 'node', // 打包对象设置为node,不再打包原生模块,例如 fs/path  TODO: webview是否单独设置为web?
+  devtool: 'source-map', // inline-source-map
+  entry: {
+    extension: path.resolve('src', 'extension.ts'),
+  },
+  output: {
+    path: path.resolve('dist'),
+    filename: '[name].js',
+    libraryTarget: 'commonjs2', // 设置打包内容已module.exports方式导出
+  },
+  exclude: [/node_modules/],
+  plugins: [new FriendlyErrorsPlugin()],
+  module: {
+    rules: [
+      {
+        enforce: 'pre',
+        test: /\.(js|jsx|ts|tsx)$/,
+        use: 'eslint-loader',
+      },
+      {
+        test: /\.ts$/,
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              compilerOptions: {
+                module: 'es6', // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+  ...developmentBaseConfig,
+};
+
+const webViewConfig = {
+  devtool: 'source-map', // inline-source-map
+  entry: {
+    webview: path.resolve('src', 'webView.tsx'),
+  },
+  output: {
+    path: path.resolve('dist'),
+    filename: '[name].js',
+    chunkFilename: '[name].chunk.js',
   },
   plugins: [
     new FriendlyErrorsPlugin(),
@@ -47,14 +84,16 @@ module.exports = {
       {
         test: /\.(ts|tsx)$/,
         use: [
-          // {
-          //   loader: 'babel-loader',
-          // },
+          {
+            loader: 'babel-loader',
+          },
           {
             loader: 'ts-loader',
             options: {
+              // 因为webview 需要在 web环境运行,无法使用ts6的commonjs 这里需要覆盖 tsconfig
               compilerOptions: {
-                module: 'es6', // override `tsconfig.json` so that TypeScript emits native JavaScript modules.
+                module: 'esnext',
+                target: 'es5',
               },
             },
           },
@@ -76,4 +115,7 @@ module.exports = {
       },
     },
   },
+  ...developmentBaseConfig,
 };
+
+module.exports = [extensionConfig, webViewConfig];

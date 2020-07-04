@@ -77,9 +77,8 @@
   },
   "scripts": {
     "dev-server": "NODE_ENV=development webpack --watch",
-    "package": "NODE_ENV=production webpack --progress",
+    "package": "NODE_ENV=production webpack --mode development --watch --progress",
     "vscode:prepublish": "yarn run compile",
-    "webpack-dev": "webpack --mode development --watch",
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
