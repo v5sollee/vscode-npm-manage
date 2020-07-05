@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { getWebViewContent } from './utils/index';
+import { getWebViewContent, getExtensionFileVscodeResource } from './utils/index';
 
 /**
  * 插件触发时执行
@@ -14,13 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand('vscode-npm-manage.openNpmManageView', (url) => {
     console.log('当前文件地址:', url.path);
     const html = getWebViewContent(context, 'dist/view/webView.html');
-    console.log(`activate -> html`, html);
-    const panel = vscode.window.createWebviewPanel('testWebView', '演示', vscode.ViewColumn.One, {
+    const panel = vscode.window.createWebviewPanel('webView', 'NPM Manage', vscode.ViewColumn.One, {
       enableScripts: true, // 启用JS
-      retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+      retainContextWhenHidden: true, // webview被隐藏时保持状态,避免被重置.
     });
     panel.webview.html = html;
-    vscode.window.showErrorMessage('这是错误信息2');
+    panel.iconPath = getExtensionFileVscodeResource(context, 'dist/images/npm-outline.svg');
   });
 
   const updateLatest = vscode.commands.registerCommand('vscode-npm-manage.npmUpdateLatest', () => {

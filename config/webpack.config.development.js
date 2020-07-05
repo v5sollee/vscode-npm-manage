@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const createStyleLoaders = require('./webpack.less');
 
 const styleLoaders = createStyleLoaders({ isDev: true });
@@ -66,6 +67,10 @@ const webViewConfig = {
   },
   plugins: [
     new FriendlyErrorsPlugin(),
+    new CopyWebpackPlugin([
+      { from: 'src/iconfont/iconfont.js', to: './iconfont/iconfont.js' },
+      { from: 'src/images/npm-outline.svg', to: './images/npm-outline.svg' },
+    ]),
     new HtmlWebpackPlugin({
       inject: true,
       template: path.resolve('src/view', 'webview.html'),
@@ -118,6 +123,32 @@ const webViewConfig = {
         },
       },
     },
+  },
+  devServer: {
+    port: 8099,
+    hot: true,
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: '*******',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
+    },
+    disableHostCheck: true, // 不再检测头
+    historyApiFallback: true,
+    inline: true, // appear in the browser console
+    progress: false, // 是否显示加载进度
+    stats: {
+      colors: true,
+      modules: false,
+      chunks: false,
+      chunkModules: false,
+      children: false,
+    },
+    overlay: true,
   },
   ...developmentBaseConfig,
 };

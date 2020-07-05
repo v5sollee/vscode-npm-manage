@@ -14,7 +14,7 @@ import * as fs from 'fs';
  */
 const getExtensionFileVscodeResource = (context: vscode.ExtensionContext, relativePath: string) => {
   const diskPath = vscode.Uri.file(path.join(context.extensionPath, relativePath));
-  return diskPath.with({ scheme: 'vscode-resource' }).toString();
+  return diskPath.with({ scheme: 'vscode-resource' });
 };
 
 /**
