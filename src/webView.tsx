@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import ReactDom from 'react-dom';
 
 import Input from './components/input';
+import List from './components/list';
 
 import './styles/reset.less';
 import './styles/webview.less';
@@ -27,10 +28,16 @@ const WebView = () => {
 
       <div className="card">
         <div className="title">
-          <span>运行依赖</span>
+          <span>Dependencies</span>
+          <button>
+            Add dependencies
+            <svg className="icon download-icon" aria-hidden="true">
+              <use xlinkHref="#icon-download"></use>
+            </svg>
+          </button>
         </div>
-        <div className="add-module-input">
-          <Input placeholder="添加运行依赖" onChange={onChangeSearchValue} />
+        <div className="list">
+          <List />
         </div>
       </div>
     </div>
