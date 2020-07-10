@@ -17,8 +17,22 @@
     }
   }
 
+  .content {
+    display: flex;
+  }
+
   .card {
+    flex: 1;
     margin-top: 20px;
+    &:nth-child(1) {
+      margin-right: 15px;
+      .list {
+        border-right: 1px solid var(--vscode-input-background);
+      }
+    }
+    &:nth-child(2) > .list {
+      border-left: 1px solid var(--vscode-input-background);
+    }
     .title {
       display: flex;
       flex-direction: row;
@@ -31,7 +45,7 @@
       font-weight: 500;
       line-height: 30px;
       color: var(--sideBarSectionHeader-foreground);
-      text-transform: uppercase;
+      // text-transform: uppercase;
       user-select: none;
       border: 1px solid var(--vscode-input-background);
     }

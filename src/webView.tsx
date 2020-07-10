@@ -26,18 +26,24 @@ const WebView = () => {
         {searchValue}
       </div>
 
-      <div className="card">
-        <div className="title">
-          <span>Dependencies</span>
-          <button>
-            Add dependencies
-            <svg className="icon download-icon" aria-hidden="true">
-              <use xlinkHref="#icon-download"></use>
-            </svg>
-          </button>
+      <div className="content">
+        <div className="card">
+          <div className="title">
+            <span>Dependencies</span>
+            <button>Add dependencies</button>
+          </div>
+          <div className="list">
+            <List />
+          </div>
         </div>
-        <div className="list">
-          <List />
+        <div className="card">
+          <div className="title">
+            <span>Dependencies</span>
+            <button>Add dependencies</button>
+          </div>
+          <div className="list">
+            <List />
+          </div>
         </div>
       </div>
     </div>
