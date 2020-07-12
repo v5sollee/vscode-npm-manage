@@ -16,7 +16,6 @@
     "Extension Packs"
   ],
   "activationEvents": [
-    "onCommand:vscode-npm-manage.helloWebpack",
     "onCommand:vscode-npm-manage.npmUpdateLatest",
     "onCommand:vscode-npm-manage.openNpmManageView"
   ],
@@ -68,10 +67,6 @@
         "command": "vscode-npm-manage.npmUpdateLatest",
         "title": "npm update latest",
         "category": "Npm Manage"
-      },
-      {
-        "command": "vscode-npm-manage.helloWebpack",
-        "title": "Hello Webpack"
       }
     ]
   },
@@ -148,6 +143,7 @@
     "webpack-extension-reloader": "^1.1.4"
   },
   "dependencies": {
+    "@npms/queries": "^3.0.0",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.7",
     "@types/webpack-env": "^1.15.1",

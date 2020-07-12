@@ -1,19 +1,30 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import ReactDom from 'react-dom';
 
 import Input from './components/input';
 import List from './components/list';
 
+import { MESSAGE } from './enum/message';
+
 import './styles/reset.less';
 import './styles/webview.less';
 
+const vscode = acquireVsCodeApi();
+
 const WebView = () => {
   const [searchValue, setSearchValue] = useState('');
+  const [loading] = useState(true);
+
+  useEffect(() => {
+    vscode.postMessage({ command: MESSAGE.INIT_NPM });
+  }, []);
+
   const onChangeSearchValue: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     setSearchValue(e.target.value);
   }, []);
   return (
     <div className="npm-manage">
+      {loading && <div>LOADING</div>}
       <div className="filter">
         <Input width={250} placeholder="Enter trem and press enter to search" onChange={onChangeSearchValue} />
         <button className="filter-btn">Search</button>
