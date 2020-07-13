@@ -1,6 +1,4 @@
-import { Module } from 'webpack';
-
-export interface ModauleType {
+export interface ModuleType {
   name: string;
   version: string; // 当前版本
   latestVersion: string; // 最新版本
@@ -16,6 +14,4 @@ export interface PackageType {
   scripts: StringObject;
   devDependencies: StringObject;
   dependencies: StringObject;
-  devDependenciesInfo: Array<ModauleType>;
-  dependenciesInfo: Array<ModauleType>;
 }

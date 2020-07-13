@@ -143,10 +143,13 @@
     "webpack-extension-reloader": "^1.1.4"
   },
   "dependencies": {
+    "@npmcli/promise-spawn": "^1.2.0",
     "@npms/queries": "^3.0.0",
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.7",
     "@types/webpack-env": "^1.15.1",
+    "libnpmconfig": "^1.2.1",
+    "npm-package-arg": "^8.0.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
   },

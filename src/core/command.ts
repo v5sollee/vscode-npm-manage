@@ -1,4 +1,4 @@
-import type { PackageType, ModauleType } from '../interface';
+import type { PackageType, ModuleType } from '../interface';
 import { execSync } from 'child_process';
 
 import * as vscode from 'vscode';
