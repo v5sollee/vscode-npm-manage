@@ -1,3 +1,4 @@
+import type { PackageType } from './interface/index';
 import React, { useState, useCallback, useEffect } from 'react';
 import ReactDom from 'react-dom';
 
@@ -14,17 +15,43 @@ const vscode = acquireVsCodeApi();
 const WebView = () => {
   const [searchValue, setSearchValue] = useState('');
   const [loading] = useState(true);
+  const [packageData, setPackageData] = useState<PackageType>({
+    name: '',
+    version: '',
+    description: '',
+    main: '',
+    scripts: {},
+    devDependencies: {},
+    dependencies: {},
+  });
 
   useEffect(() => {
     vscode.postMessage({ command: MESSAGE.INIT_NPM });
   }, []);
 
+  useEffect(() => {
+    const listen = (event: any) => {
+      const data = event.data;
+      switch (data.message) {
+        case MESSAGE.FINISH_QUERY_PACKAGE:
+          setPackageData(data.payload);
+          return;
+      }
+    };
+    window.addEventListener('message', listen);
+
+    return () => {
+      window.removeEventListener('message', listen);
+    };
+  }, []);
+
   const onChangeSearchValue: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     setSearchValue(e.target.value);
   }, []);
+
   return (
     <div className="npm-manage">
-      {loading && <div>LOADING</div>}
+      {loading && <div></div>}
       <div className="filter">
         <Input width={250} placeholder="Enter trem and press enter to search" onChange={onChangeSearchValue} />
         <button className="filter-btn">Search</button>
@@ -44,7 +71,8 @@ const WebView = () => {
             <button>Add dependencies</button>
           </div>
           <div className="list">
-            <List />
+            <List data={packageData.dependencies} />
+            <List data={packageData.devDependencies} />
           </div>
         </div>
         <div className="card">
@@ -53,7 +81,7 @@ const WebView = () => {
             <button>Add dependencies</button>
           </div>
           <div className="list">
-            <List />
+            <List data={packageData.devDependencies} />
           </div>
         </div>
       </div>

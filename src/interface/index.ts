@@ -1,11 +1,3 @@
-export interface ModuleType {
-  name: string;
-  version: string; // 当前版本
-  latestVersion: string; // 最新版本
-  allVersion: Array<string>; // 历史版本
-  homepage: string; // npm 主页
-  [key: string]: any;
-}
 export interface PackageType {
   name: string;
   version: string;

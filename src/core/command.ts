@@ -1,9 +1,9 @@
-import type { PackageType, ModuleType } from '../interface';
-import { execSync } from 'child_process';
+import type { PackageType } from '../interface';
 
 import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
+import ncu from 'npm-check-updates';
 
 import { readFilePromise } from '../utils/file';
 
@@ -12,7 +12,7 @@ import { readFilePromise } from '../utils/file';
  * @param {object} deps 依赖信息
  * @param {string} dir 项目路径
  */
-export const queryModuleVersion = (deps: StringObject, dir: string): StringObject => {
+export const queryModuleVersion = async (deps: StringObject, dir: string): Promise<StringObject> => {
   let modules: StringObject = {};
   for (let key in deps) {
     try {
@@ -23,35 +23,33 @@ export const queryModuleVersion = (deps: StringObject, dir: string): StringObjec
       modules[key] = '';
     }
   }
-  console.log('modules:', modules);
   return modules;
 };
 
-export const queryModuleAllVersion = (_module: StringObject) => {
-  // for (let key in module) {
-  //   try {
-  //     const versions = execSync(`npm view ${key} version`);
-  //     console.log('versions:', versions);
-  //   } catch (error) {
-  //     console.log('获取全部版本失败');
-  //   }
-  // }
-};
-
 export const getPackageVersion = (_context: vscode.ExtensionContext, url: any) => {
-  readFilePromise(url.fsPath, 'utf-8').then((file) => {
+  return readFilePromise(url.fsPath, 'utf-8').then(async (file) => {
     try {
       const data: PackageType = JSON.parse(file);
-      const wordspacePath = url.fsPath.replace('/package.json', '');
+      const wordSpacePath = url.fsPath.replace('/package.json', '');
       if (data.dependencies) {
-        data.dependencies = queryModuleVersion(data.dependencies, wordspacePath);
+        data.dependencies = await queryModuleVersion(data.dependencies, wordSpacePath);
       }
 
       if (data.devDependencies) {
-        data.devDependencies = queryModuleVersion(data.devDependencies, wordspacePath);
+        data.devDependencies = await queryModuleVersion(data.devDependencies, wordSpacePath);
       }
+      console.log('wordSpacePath:', url.fsPath);
+      const lastVersions = await ncu.run({
+        configFilePath: url.fsPath,
+        jsonUpgraded: true,
+        packageManager: 'npm',
+        silent: true,
+      });
+      console.log('lastVersions:', lastVersions);
+      return data;
     } catch (error) {
       vscode.window.showErrorMessage('package.json 文件损坏');
+      return;
     }
   });
 };

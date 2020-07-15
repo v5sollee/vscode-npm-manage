@@ -4,4 +4,5 @@
  */
 export enum MESSAGE {
   INIT_NPM, // 初始化
+  FINISH_QUERY_PACKAGE, // 获取版本信息完成
 }

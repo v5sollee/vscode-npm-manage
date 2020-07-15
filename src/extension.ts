@@ -10,7 +10,7 @@ import { getPackageVersion } from './core/command';
 export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand('vscode-npm-manage.openNpmManageView', (url) => {
     const html = getWebViewContent(context, 'dist/view/webView.html');
-    const panel = vscode.window.createWebviewPanel('webView', 'NPM Manage', vscode.ViewColumn.One, {
+    let panel = vscode.window.createWebviewPanel('webView', 'NPM Manage', vscode.ViewColumn.One, {
       enableScripts: true, // 启用JS
       retainContextWhenHidden: true, // webview被隐藏时保持状态,避免被重置.
     });
@@ -20,17 +20,16 @@ export function activate(context: vscode.ExtensionContext) {
     /**
      * 接收并处理webview传递的信息
      */
-    panel.webview.onDidReceiveMessage((message) => {
+    panel.webview.onDidReceiveMessage(async (message) => {
       switch (message.command) {
         case MESSAGE.INIT_NPM:
-          getPackageVersion(context, url);
+          const data = await getPackageVersion(context, url);
+          panel.webview.postMessage({ message: MESSAGE.FINISH_QUERY_PACKAGE, payload: data });
           return;
       }
     });
 
-    panel.onDidDispose(() => {
-      // webview 关闭回调
-    });
+    panel.onDidDispose(() => {}, undefined, context.subscriptions);
   });
 
   const updateLatest = vscode.commands.registerCommand('vscode-npm-manage.npmUpdateLatest', () => {
