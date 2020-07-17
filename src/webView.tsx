@@ -1,6 +1,6 @@
 import type { PackageType } from './interface/index';
 import React, { useState, useCallback, useEffect } from 'react';
-import ReactDom from 'react-dom';
+import ReactDom, { unstable_batchedUpdates as batch } from 'react-dom';
 
 import Input from './components/input';
 import List from './components/list';
@@ -14,7 +14,7 @@ const vscode = acquireVsCodeApi();
 
 const WebView = () => {
   const [searchValue, setSearchValue] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [packageData, setPackageData] = useState<PackageType>({
     name: '',
     version: '',
@@ -39,7 +39,10 @@ const WebView = () => {
           return;
         case MESSAGE.FINISH_CHECK_PACKAGES_LATEST:
           console.log('webview中获取到最新版本:', data.payload);
-          setLatestVersion(data.payload);
+          batch(() => {
+            setLatestVersion(data.payload);
+            setLoading(false);
+          });
           return;
         default:
           return;

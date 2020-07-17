@@ -46,13 +46,19 @@ export const getPackageVersion = (_context: vscode.ExtensionContext, url: any) =
   });
 };
 
+/**
+ * TODO 优化整个检测流程/移动提示信息
+ * @description: 检测package.json依赖的最新版本
+ * @param packageUrl {string} package.json文件地址
+ * @return: 与最新版本不相同的所有依赖
+ */
 export const getPackageLastVersion = async (packageUrl: any): Promise<StringObject> => {
   console.log('开始检测最新版本,package.js地址:', packageUrl.fsPath);
   try {
     const result = await ncu.run({
       packageFile: packageUrl.fsPath,
       jsonUpgraded: true,
-      // packageManager: 'npm',
+      packageManager: 'npm',
       silent: true,
     });
     vscode.window.showInformationMessage('已获取最新版本');
@@ -62,22 +68,4 @@ export const getPackageLastVersion = async (packageUrl: any): Promise<StringObje
     vscode.window.showErrorMessage('最新版本获取失败');
     return {};
   }
-  // return new Promise((resolve, reject) => {
-  //   ncu
-  //     .run({
-  //       packageFile: packageUrl.fsPath,
-  //       jsonUpgraded: true,
-  //       // packageManager: 'npm',
-  //       silent: true,
-  //     })
-  //     .then((res) => {
-  //       vscode.window.showInformationMessage('已获取最新版本');
-  //       resolve(res);
-  //     })
-  //     .catch((error) => {
-  //       vscode.window.showErrorMessage('获取最新版本失败');
-  //       console.error(error);
-  //       reject(error);
-  //     });
-  // });
 };

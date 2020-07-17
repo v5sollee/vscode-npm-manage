@@ -15,9 +15,10 @@ const List: FC<ListType> = ({ data, latestVersionData }) => {
           <li key={idx}>
             <span className="name">{key}</span>
             <div>
-              <span className="version">
-                {data[key]} {latestVersionData[key] ? `->${latestVersionData[key]}` : null}
-              </span>
+              <div className="version">
+                <span>{data[key]}</span>
+                <span className="latest-version">{latestVersionData[key] ? `->${latestVersionData[key]}` : null}</span>
+              </div>
               <div className="operation">
                 <div className="version-select">
                   <select>
