@@ -14,7 +14,7 @@ const vscode = acquireVsCodeApi();
 
 const WebView = () => {
   const [searchValue, setSearchValue] = useState('');
-  const [loading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [packageData, setPackageData] = useState<PackageType>({
     name: '',
     version: '',
@@ -24,6 +24,7 @@ const WebView = () => {
     devDependencies: {},
     dependencies: {},
   });
+  const [latestVersionData, setLatestVersion] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     vscode.postMessage({ command: MESSAGE.INIT_NPM });
@@ -35,6 +36,12 @@ const WebView = () => {
       switch (data.message) {
         case MESSAGE.FINISH_QUERY_PACKAGE:
           setPackageData(data.payload);
+          return;
+        case MESSAGE.FINISH_CHECK_PACKAGES_LATEST:
+          console.log('webview中获取到最新版本:', data.payload);
+          setLatestVersion(data.payload);
+          return;
+        default:
           return;
       }
     };
@@ -49,12 +56,26 @@ const WebView = () => {
     setSearchValue(e.target.value);
   }, []);
 
+  /**
+   * 检测依赖最新版本
+   */
+  const onCheckUpdate = useCallback(() => {
+    setLoading(true);
+    vscode.postMessage({ command: MESSAGE.CHECK_PACKAGES_LATEST });
+  }, []);
+
   return (
     <div className="npm-manage">
-      {loading && <div></div>}
+      {loading && <div>LOADING~</div>}
       <div className="filter">
         <Input width={250} placeholder="Enter trem and press enter to search" onChange={onChangeSearchValue} />
         <button className="filter-btn">Search</button>
+        <button className="filter-btn" onClick={onCheckUpdate}>
+          Check Update
+          <svg className="icon download-icon" aria-hidden="true">
+            <use xlinkHref="#icon-download"></use>
+          </svg>
+        </button>
         <button>
           Install All
           <svg className="icon download-icon" aria-hidden="true">
@@ -71,8 +92,7 @@ const WebView = () => {
             <button>Add dependencies</button>
           </div>
           <div className="list">
-            <List data={packageData.dependencies} />
-            <List data={packageData.devDependencies} />
+            <List data={packageData.dependencies} latestVersionData={latestVersionData} />
           </div>
         </div>
         <div className="card">
@@ -81,7 +101,7 @@ const WebView = () => {
             <button>Add dependencies</button>
           </div>
           <div className="list">
-            <List data={packageData.devDependencies} />
+            <List data={packageData.devDependencies} latestVersionData={latestVersionData} />
           </div>
         </div>
       </div>

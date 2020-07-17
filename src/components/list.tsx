@@ -4,17 +4,20 @@ import './list.less';
 
 export interface ListType {
   data: StringObject;
+  latestVersionData: StringObject;
 }
 
-const List: FC<ListType> = ({ data }) => {
+const List: FC<ListType> = ({ data, latestVersionData }) => {
   return (
     <div className="npm-manage-list">
       <ul>
-        {Object.keys(data).map((obj, idx) => (
+        {Object.keys(data).map((key, idx) => (
           <li key={idx}>
-            <span className="name">{obj}</span>
+            <span className="name">{key}</span>
             <div>
-              <span className="version">{data[obj]}</span>
+              <span className="version">
+                {data[key]} {latestVersionData[key] ? `->${latestVersionData[key]}` : null}
+              </span>
               <div className="operation">
                 <div className="version-select">
                   <select>

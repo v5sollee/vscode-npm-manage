@@ -131,10 +131,12 @@ input {
   width: 100%;
   padding: 5px 10px;
   font-size: 12px;
+  // color: var(--vscode-input-foreground);
   color: var(--vscode-input-foreground);
   vertical-align: top;
   background: var(--vscode-input-background);
   border: 1px solid var(--vscode-input-background);
+  // border: 1px solid var(--vscode-input-border);
   border-radius: 0;
   outline: none;
 
@@ -161,20 +163,24 @@ button {
   font-weight: 400;
 
   line-height: 1.5;
-  color: var(--vscode-input-foreground);
+  // color: var(--vscode-input-foreground);
+  color: var(--vscode-button-foreground);
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
   touch-action: manipulation;
   cursor: pointer;
-  background: var(--vscode-input-background);
-  border: 1px solid var(--vscode-input-background);
+  // background: var(--vscode-input-background);
+  background: var(--vscode-button-background);
+  border: none;
+  // border: 1px solid var(--vscode-input-background);
   outline: none;    //消除默认点击蓝色边框效果
 
   &:hover {
-    color: var(--vscode-breadcrumb-focusForeground);
-    background: var(--vscode-input-background);
-    border: 1px solid var(--vscode-focusBorder);
+    // color: var(--vscode-button-focusForeground);
+    // background: var(--vscode-input-background);
+    background: var(--vscode-button-hoverBackground);
+    // border: 1px solid var(--vscode-focusBorder);
   }
 }
 

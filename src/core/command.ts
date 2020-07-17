@@ -38,18 +38,46 @@ export const getPackageVersion = (_context: vscode.ExtensionContext, url: any) =
       if (data.devDependencies) {
         data.devDependencies = await queryModuleVersion(data.devDependencies, wordSpacePath);
       }
-      console.log('wordSpacePath:', url.fsPath);
-      const lastVersions = await ncu.run({
-        configFilePath: url.fsPath,
-        jsonUpgraded: true,
-        packageManager: 'npm',
-        silent: true,
-      });
-      console.log('lastVersions:', lastVersions);
       return data;
     } catch (error) {
-      vscode.window.showErrorMessage('package.json 文件损坏');
+      vscode.window.showErrorMessage(error);
       return;
     }
   });
+};
+
+export const getPackageLastVersion = async (packageUrl: any): Promise<StringObject> => {
+  console.log('开始检测最新版本,package.js地址:', packageUrl.fsPath);
+  try {
+    const result = await ncu.run({
+      packageFile: packageUrl.fsPath,
+      jsonUpgraded: true,
+      // packageManager: 'npm',
+      silent: true,
+    });
+    vscode.window.showInformationMessage('已获取最新版本');
+    return result;
+  } catch (error) {
+    console.error(error);
+    vscode.window.showErrorMessage('最新版本获取失败');
+    return {};
+  }
+  // return new Promise((resolve, reject) => {
+  //   ncu
+  //     .run({
+  //       packageFile: packageUrl.fsPath,
+  //       jsonUpgraded: true,
+  //       // packageManager: 'npm',
+  //       silent: true,
+  //     })
+  //     .then((res) => {
+  //       vscode.window.showInformationMessage('已获取最新版本');
+  //       resolve(res);
+  //     })
+  //     .catch((error) => {
+  //       vscode.window.showErrorMessage('获取最新版本失败');
+  //       console.error(error);
+  //       reject(error);
+  //     });
+  // });
 };
