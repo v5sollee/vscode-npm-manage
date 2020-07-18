@@ -4,6 +4,7 @@ import ReactDom, { unstable_batchedUpdates as batch } from 'react-dom';
 
 import Input from './components/input';
 import List from './components/list';
+import Loading from './components/loading';
 
 import { MESSAGE } from './enum/message';
 
@@ -69,7 +70,7 @@ const WebView = () => {
 
   return (
     <div className="npm-manage">
-      {loading && <div>LOADING~</div>}
+      <Loading visible={loading} />
       <div className="filter">
         <Input width={250} placeholder="Enter trem and press enter to search" onChange={onChangeSearchValue} />
         <button className="filter-btn">Search</button>

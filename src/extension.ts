@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { getWebViewContent, getExtensionFileVscodeResource } from './utils/index';
 import { MESSAGE } from './enum/message';
-import { getPackageVersion, getPackageLastVersion, queryModuleVersion } from './core/command';
+import { getPackageVersion, getPackageLastVersion } from './core/command';
 // import { exec } from 'child_process';
 
 /**
@@ -29,22 +29,14 @@ export function activate(context: vscode.ExtensionContext) {
           }
           return;
         case MESSAGE.CHECK_PACKAGES_LATEST:
-          const latestVersion = await getPackageLastVersion(url);
-          if (latestVersion) {
-            panel.webview.postMessage({ message: MESSAGE.FINISH_CHECK_PACKAGES_LATEST, payload: latestVersion });
-          }
+          getPackageLastVersion(url).then((result) => {
+            panel.webview.postMessage({ message: MESSAGE.FINISH_CHECK_PACKAGES_LATEST, payload: result });
+          });
           return;
         default:
           return {};
       }
     });
-
-    // 获取最新版本
-    // getPackageLastVersion(url)
-    //   .then((result) => {
-    //     console.log('result:', result);
-    //   })
-    //   .catch(() => {});
 
     panel.onDidDispose(() => {}, undefined, context.subscriptions);
   });

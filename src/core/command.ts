@@ -52,20 +52,37 @@ export const getPackageVersion = (_context: vscode.ExtensionContext, url: any) =
  * @param packageUrl {string} package.json文件地址
  * @return: 与最新版本不相同的所有依赖
  */
-export const getPackageLastVersion = async (packageUrl: any): Promise<StringObject> => {
+export const getPackageLastVersion = (packageUrl: vscode.Uri): Promise<StringObject> => {
   console.log('开始检测最新版本,package.js地址:', packageUrl.fsPath);
-  try {
-    const result = await ncu.run({
-      packageFile: packageUrl.fsPath,
-      jsonUpgraded: true,
-      packageManager: 'npm',
-      silent: true,
-    });
-    vscode.window.showInformationMessage('已获取最新版本');
-    return result;
-  } catch (error) {
-    console.error(error);
-    vscode.window.showErrorMessage('最新版本获取失败');
-    return {};
-  }
+  return new Promise((resolve) => {
+    ncu
+      .run({
+        packageFile: packageUrl.fsPath,
+        jsonUpgraded: true,
+        packageManager: 'npm',
+        silent: true,
+      })
+      .then((result) => {
+        resolve(result);
+        vscode.window.showInformationMessage('已获取最新版本');
+      })
+      .catch((error) => {
+        console.error(error);
+        vscode.window.showErrorMessage('最新版本获取失败');
+      });
+  });
+  // try {
+  //   ncu.run({
+  //     packageFile: packageUrl.fsPath,
+  //     jsonUpgraded: true,
+  //     packageManager: 'npm',
+  //     silent: true,
+  //   });
+  //   vscode.window.showInformationMessage('已获取最新版本');
+  //   return result;
+  // } catch (error) {
+  //   console.error(error);
+  //   vscode.window.showErrorMessage('最新版本获取失败');
+  //   return {};
+  // }
 };

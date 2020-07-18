@@ -151,6 +151,7 @@
     "cosmiconfig": "^6.0.0",
     "latest-version": "^5.1.0",
     "libnpmconfig": "^1.2.1",
+    "npm-check": "^5.9.2",
     "npm-check-updates": "^7.0.1",
     "npm-package-arg": "^8.0.1",
     "package-json": "^6.5.0",
