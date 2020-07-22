@@ -1,6 +1,7 @@
 import type { PackageType } from './interface/index';
 import React, { useState, useCallback, useEffect } from 'react';
 import ReactDom, { unstable_batchedUpdates as batch } from 'react-dom';
+import axios from 'axios';
 
 import Input from './components/input';
 import List from './components/list';
@@ -11,11 +12,16 @@ import { MESSAGE } from './enum/message';
 import './styles/reset.less';
 import './styles/webview.less';
 
+axios.create({
+  withCredentials: true,
+});
+
 const vscode = acquireVsCodeApi();
 
 const WebView = () => {
   const [searchValue, setSearchValue] = useState('');
   const [loading, setLoading] = useState(false);
+  const [requestVersion, setRequestVersion] = useState(false);
   const [packageData, setPackageData] = useState<PackageType>({
     name: '',
     version: '',
@@ -39,7 +45,10 @@ const WebView = () => {
           setPackageData(data.payload);
           return;
         case MESSAGE.FINISH_CHECK_PACKAGES_LATEST:
-          console.log('webview中获取到最新版本:', data.payload);
+          if (!data.payload) {
+            setLoading(false);
+            return;
+          }
           batch(() => {
             setLatestVersion(data.payload);
             setLoading(false);
@@ -56,6 +65,19 @@ const WebView = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (!requestVersion) {
+      return;
+    }
+    axios
+      .get('https://registry.yarnpkg.com/shuqu-cli', {
+        headers: {},
+      })
+      .then((res) => {
+        console.log(res);
+      });
+  }, [requestVersion]);
+
   const onChangeSearchValue: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     setSearchValue(e.target.value);
   }, []);
@@ -64,8 +86,10 @@ const WebView = () => {
    * 检测依赖最新版本
    */
   const onCheckUpdate = useCallback(() => {
+    console.log('请求');
     setLoading(true);
-    vscode.postMessage({ command: MESSAGE.CHECK_PACKAGES_LATEST });
+    setRequestVersion(true);
+    // vscode.postMessage({ command: MESSAGE.CHECK_PACKAGES_LATEST });
   }, []);
 
   return (

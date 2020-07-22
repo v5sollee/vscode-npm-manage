@@ -56,21 +56,22 @@
 // } catch (ex) {
 // }
 
-const ncu = require('npm-check-updates');
+// const ncu = require('npm-check-updates');
 
-const getVersion = async () => {
-  const data = await ncu.run({
-    // Any command-line option can be specified here.
-    // These are set by default:
-    configFilePath: '/Users/liyang/code/github/vscode-npm-manage/package.json',
-    jsonUpgraded: true,
-    packageManager: 'npm',
-    silent: true,
-  });
-  console.log('data:', data);
-};
+// const getVersion = async () => {
+//   const data = await ncu.run({
+//     // Any command-line option can be specified here.
+//     // These are set by default:
+//     configFilePath: '/Users/liyang/code/github/vscode-npm-manage/package.json',
+//     jsonUpgraded: true,
+//     packageManager: 'npm',
+//     silent: true,
+//   });
+//   console.log('data:', data);
+// };
 
-getVersion();
+// getVersion();
+
 // ncu
 //   .run({
 //     // Any command-line option can be specified here.
@@ -119,3 +120,11 @@ getVersion();
 
 //   console.error('the package data is', data);
 // });
+
+// const npmCheck = require('npm-check');
+
+// npmCheck({}).then((currentState) => console.log(currentState.get('packages')));
+const request = require('request');
+request.get('https://registry.yarnpkg.com/shuqu-cli').on('response', function (response) {
+  console.log(response); // 200
+});

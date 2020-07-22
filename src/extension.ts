@@ -29,9 +29,14 @@ export function activate(context: vscode.ExtensionContext) {
           }
           return;
         case MESSAGE.CHECK_PACKAGES_LATEST:
-          getPackageLastVersion(url).then((result) => {
+          try {
+            const result = await getPackageLastVersion(url);
+            console.log('成功');
             panel.webview.postMessage({ message: MESSAGE.FINISH_CHECK_PACKAGES_LATEST, payload: result });
-          });
+          } catch (error) {
+            vscode.window.showErrorMessage(JSON.stringify(error));
+            panel.webview.postMessage({ message: MESSAGE.FINISH_CHECK_PACKAGES_LATEST, payload: null });
+          }
           return;
         default:
           return {};
