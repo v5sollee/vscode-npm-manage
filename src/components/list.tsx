@@ -17,7 +17,14 @@ const List: FC<ListType> = ({ data, latestVersionData }) => {
             <div>
               <div className="version">
                 <span>{data[key]}</span>
-                <span className="latest-version">{latestVersionData[key] ? `->${latestVersionData[key]}` : null}</span>
+                {latestVersionData[key] ? (
+                  <span>
+                    <svg className="icon ziyuan-icon" aria-hidden="true">
+                      <use xlinkHref="#icon-ziyuan"></use>
+                    </svg>
+                    <span className="latest-version">{latestVersionData[key]}</span>
+                  </span>
+                ) : null}
               </div>
               <div className="operation">
                 <div className="version-select">

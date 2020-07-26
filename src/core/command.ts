@@ -3,9 +3,9 @@ import type { PackageType } from '../interface';
 import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
-import ncu from 'npm-check-updates';
-
 import { readFilePromise } from '../utils/file';
+import ncu from 'npm-check-updates';
+// import axios from 'axios';
 
 /**
  * 查询模块版本
@@ -46,12 +46,12 @@ export const getPackageVersion = (_context: vscode.ExtensionContext, url: any) =
   });
 };
 
-/**
- * TODO 优化整个检测流程/移动提示信息
- * @description: 检测package.json依赖的最新版本
- * @param packageUrl {string} package.json文件地址
- * @return: 与最新版本不相同的所有依赖
- */
+// /**
+//  * TODO 优化整个检测流程/移动提示信息
+//  * @description: 检测package.json依赖的最新版本
+//  * @param packageUrl {string} package.json文件地址
+//  * @return: 与最新版本不相同的所有依赖
+//  */
 export const getPackageLastVersion = (packageUrl: vscode.Uri): Promise<StringObject> => {
   return new Promise((resolve, reject) => {
     ncu
@@ -70,3 +70,21 @@ export const getPackageLastVersion = (packageUrl: vscode.Uri): Promise<StringObj
       });
   });
 };
+// export const getPackageLastVersion = async (dependencies: StringObject): Promise<ResultVersionType[]> => {
+//   let versions: ResultVersionType[] = [];
+
+//   for (let key in dependencies) {
+//     console.log('request:', `https://registry.yarnpkg.com/${key}`);
+//     try {
+//       const result = await axios.get<RequestVersionType>(`https://registry.yarnpkg.com/${key}`);
+//       const data = result.data;
+//       versions.push({
+//         name: data.name,
+//         latest: data['dist-tags'].latest,
+//         version: Object.keys(data.versions),
+//         description: data.description,
+//       });
+//     } catch (error) {}
+//   }
+//   return versions;
+// };

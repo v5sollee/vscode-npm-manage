@@ -2,7 +2,11 @@ import * as vscode from 'vscode';
 import { getWebViewContent, getExtensionFileVscodeResource } from './utils/index';
 import { MESSAGE } from './enum/message';
 import { getPackageVersion, getPackageLastVersion } from './core/command';
-// import { exec } from 'child_process';
+
+type MessageType = {
+  command: MESSAGE;
+  payload: any;
+};
 
 /**
  * 插件触发时执行
@@ -20,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     /**
      * 接收并处理webview传递的信息
      */
-    panel.webview.onDidReceiveMessage(async (message) => {
+    panel.webview.onDidReceiveMessage(async (message: MessageType) => {
       switch (message.command) {
         case MESSAGE.INIT_NPM:
           const data = await getPackageVersion(context, url);
@@ -31,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
         case MESSAGE.CHECK_PACKAGES_LATEST:
           try {
             const result = await getPackageLastVersion(url);
-            console.log('成功');
+            console.log(`activate -> result`, result);
             panel.webview.postMessage({ message: MESSAGE.FINISH_CHECK_PACKAGES_LATEST, payload: result });
           } catch (error) {
             vscode.window.showErrorMessage(JSON.stringify(error));
