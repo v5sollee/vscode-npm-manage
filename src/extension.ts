@@ -2,16 +2,21 @@ import * as vscode from 'vscode';
 import { getWebViewContent, getExtensionFileVscodeResource } from './utils/index';
 import { MESSAGE } from './enum/message';
 import { getPackageVersion, getPackageLastVersion } from './core/command';
+import { NodeDependenciesProvider } from './core/com';
 
 type MessageType = {
   command: MESSAGE;
   payload: any;
 };
-
 /**
  * 插件触发时执行
  */
 export function activate(context: vscode.ExtensionContext) {
+  vscode.window.registerTreeDataProvider(
+    'npmManageDependencies',
+    new NodeDependenciesProvider(vscode.workspace.rootPath || '')
+  );
+
   const disposable = vscode.commands.registerCommand('vscode-npm-manage.openNpmManageView', (url) => {
     const html = getWebViewContent(context, 'dist/view/webView.html');
     let panel = vscode.window.createWebviewPanel('webView', 'NPM Manage', vscode.ViewColumn.One, {

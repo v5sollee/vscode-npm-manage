@@ -16,6 +16,7 @@
     "Extension Packs"
   ],
   "activationEvents": [
+    "onView:npmManageDependencies",
     "onCommand:vscode-npm-manage.npmUpdateLatest",
     "onCommand:vscode-npm-manage.openNpmManageView"
   ],
@@ -50,6 +51,23 @@
           "when": "resourceFilename == package.json",
           "command": "vscode-npm-manage.openNpmManageView",
           "group": "navigation"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "npm-manage",
+          "title": "Npm Package",
+          "icon": "/src/images/npm-outline.svg"
+        }
+      ]
+    },
+    "views": {
+      "npm-manage": [
+        {
+          "id": "npmManageDependencies",
+          "name": "dependencies"
         }
       ]
     },
