@@ -2,8 +2,12 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { getExtensionFileVscodeResource } from '../utils/index';
+
+type DevType = 'devDep' | 'dep';
+
 export class NodeDependenciesProvider implements vscode.TreeDataProvider<Dependency> {
-  constructor(private workspaceRoot: string) {}
+  constructor(private workspaceRoot: string, private devType: DevType) {}
 
   getTreeItem(element: Dependency): vscode.TreeItem {
     return element;
@@ -37,21 +41,24 @@ export class NodeDependenciesProvider implements vscode.TreeDataProvider<Depende
     if (this.pathExists(packageJsonPath)) {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
-      const toDep = (moduleName: string, version: string): Dependency => {
-        if (this.pathExists(path.join(this.workspaceRoot, 'node_modules', moduleName))) {
-          return new Dependency(moduleName, version, vscode.TreeItemCollapsibleState.Collapsed);
-        } else {
-          return new Dependency(moduleName, version, vscode.TreeItemCollapsibleState.None);
-        }
-      };
+      if (this.devType === 'dep') {
+        const deps = packageJson.dependencies
+          ? Object.keys(packageJson.dependencies).map((dep) => {
+              return new Dependency(dep, packageJson.dependencies[dep], vscode.TreeItemCollapsibleState.None);
+            })
+          : [];
+        return deps;
+      }
 
-      const deps = packageJson.dependencies
-        ? Object.keys(packageJson.dependencies).map((dep) => toDep(dep, packageJson.dependencies[dep]))
-        : [];
-      const devDeps = packageJson.devDependencies
-        ? Object.keys(packageJson.devDependencies).map((dep) => toDep(dep, packageJson.devDependencies[dep]))
-        : [];
-      return deps.concat(devDeps);
+      if ((this, this.devType === 'devDep')) {
+        const devDeps = packageJson.devDependencies
+          ? Object.keys(packageJson.devDependencies).map(
+              (dep) => new Dependency(dep, packageJson.devDependencies[dep], vscode.TreeItemCollapsibleState.None)
+            )
+          : [];
+        return devDeps;
+      }
+      return [];
     } else {
       return [];
     }
@@ -85,7 +92,7 @@ class Dependency extends vscode.TreeItem {
   }
 
   iconPath = {
-    light: path.join(__filename, '..', 'images', 'light', 'check-dark.svg'),
-    dark: path.join(__filename, '..', 'images', 'dark', 'check-dark.svg'),
+    light: path.join(__filename, '..', '..', 'images', 'check-dark.svg'),
+    dark: path.join(__filename, '..', '..', 'images', 'check-dark.svg'),
   };
 }

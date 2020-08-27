@@ -14,7 +14,11 @@ type MessageType = {
 export function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider(
     'npmManageDependencies',
-    new NodeDependenciesProvider(vscode.workspace.rootPath || '')
+    new NodeDependenciesProvider(vscode.workspace.rootPath || '', 'dep')
+  );
+  vscode.window.registerTreeDataProvider(
+    'npmManageDevDependencies',
+    new NodeDependenciesProvider(vscode.workspace.rootPath || '', 'devDep')
   );
 
   const disposable = vscode.commands.registerCommand('vscode-npm-manage.openNpmManageView', (url) => {
@@ -55,12 +59,14 @@ export function activate(context: vscode.ExtensionContext) {
     panel.onDidDispose(() => {}, undefined, context.subscriptions);
   });
 
-  const updateLatest = vscode.commands.registerCommand('vscode-npm-manage.npmUpdateLatest', () => {
+  vscode.commands.registerCommand('vscode-npm-manage.npmUpdateLatest', () => {
     vscode.window.showInformationMessage('更新最新的2npm');
+  });
+  vscode.commands.registerCommand('vscode-npm-manage.deleteEntry', () => {
+    vscode.window.showInformationMessage('删除');
   });
 
   context.subscriptions.push(disposable);
-  context.subscriptions.push(updateLatest);
 }
 
 /**

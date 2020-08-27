@@ -17,6 +17,7 @@
   ],
   "activationEvents": [
     "onView:npmManageDependencies",
+    "onView:npmManageDevDependencies",
     "onCommand:vscode-npm-manage.npmUpdateLatest",
     "onCommand:vscode-npm-manage.openNpmManageView"
   ],
@@ -39,6 +40,23 @@
       }
     },
     "menus": {
+      "view/title": [
+        {
+          "command": "vscode-npm-manage.refreshEntry",
+          "when": "view == npmManageDependencies || view == npmManageDevDependencies",
+          "group": "navigation"
+        },
+        {
+          "command": "vscode-npm-manage.addEntry",
+          "when": "view == npmManageDependencies || view == npmManageDevDependencies"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "vscode-npm-manage.deleteEntry",
+          "when": "view == npmManageDependencies || view == npmManageDevDependencies"
+        }
+      ],
       "editor/title": [
         {
           "when": "resourceFilename == package.json",
@@ -57,21 +75,41 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "npm-manage",
+          "id": "npmManageSidebar",
           "title": "Npm Package",
           "icon": "/src/images/npm-outline.svg"
         }
       ]
     },
     "views": {
-      "npm-manage": [
+      "npmManageSidebar": [
         {
           "id": "npmManageDependencies",
-          "name": "dependencies"
+          "name": "开发依赖"
+        },
+        {
+          "id": "npmManageDevDependencies",
+          "name": "生产依赖"
         }
       ]
     },
     "commands": [
+      {
+        "command": "vscode-npm-manage.refreshEntry",
+        "title": "Refresh",
+        "icon": {
+          "light": "/src/images/check-light.svg",
+          "dark": "/src/images/check-dark.svg"
+        }
+      },
+      {
+        "command": "vscode-npm-manage.deleteEntry",
+        "title": "删除"
+      },
+      {
+        "command": "vscode-npm-manage.addEntry",
+        "title": "添加"
+      },
       {
         "command": "vscode-npm-manage.openNpmManageView",
         "title": "Open Npm Manage View",

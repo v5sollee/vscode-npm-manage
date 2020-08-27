@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const createStyleLoaders = require('./webpack.less');
+const webpack = require('webpack');
 
 const styleLoaders = createStyleLoaders({ isDev: true });
 // TODO 正式环境使用 MiniCssExtractPlugin
@@ -29,7 +30,17 @@ const extensionConfig = {
     filename: '[name].js',
     libraryTarget: 'commonjs2', // 设置打包内容已module.exports方式导出
   },
-  plugins: [new FriendlyErrorsPlugin()],
+  plugins: [
+    new FriendlyErrorsPlugin(),
+    new webpack.BannerPlugin({ banner: '#!/usr/bin/env node', raw: true }),
+    new webpack.DefinePlugin({
+      '#! /usr/bin/env node': '',
+    }),
+  ],
+  node: {
+    __filename: true,
+    __dirname: true,
+  },
   module: {
     rules: [
       {
@@ -69,7 +80,7 @@ const webViewConfig = {
     new FriendlyErrorsPlugin(),
     new CopyWebpackPlugin([
       { from: 'src/iconfont/iconfont.js', to: './iconfont/iconfont.js' },
-      { from: 'src/images/npm-outline.svg', to: './images/npm-outline.svg' },
+      { from: 'src/images', to: './images' },
     ]),
     new HtmlWebpackPlugin({
       inject: true,
