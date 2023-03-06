@@ -204,7 +204,7 @@
     "@types/react": "^16.9.23",
     "@types/react-dom": "^16.9.7",
     "@types/webpack-env": "^1.15.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.2",
     "cosmiconfig": "^6.0.0",
     "latest-version": "^5.1.0",
     "libnpmconfig": "^1.2.1",
